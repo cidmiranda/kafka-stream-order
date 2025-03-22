@@ -1,0 +1,19 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+  kafka:
+    streams:
+      bootstrap-servers: localhost:9092
+      application-id: kafka-stream-order
+
+topics:
+  orders: orders
+  frauds: frauds
+  payments: payments
+  shipments: shipments
+  transports: transports
+  deliveries: deliveries
+  completed: completed
+  partitions: 2
+  replicas: 1
