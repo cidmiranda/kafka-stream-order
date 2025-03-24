@@ -11,34 +11,28 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Printed;
 import org.apache.kafka.streams.kstream.Produced;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import sibling.stream.order.model.JsonSerde;
 import sibling.stream.order.model.Order;
 import sibling.stream.order.model.OrderTracking;
 import sibling.stream.order.model.OrderTracking.OrderTrackingState;
+import sibling.stream.order.utils.Utils;
 
 @Component
 public class OrderPaymentTopology {
-
-	@Value("${topics.payments}")
-	private String topicPayments;
-
-	@Value("${topics.shipments}")
-	private String topicShipments;
 
 	@Autowired
 	public void process(StreamsBuilder streamsBuilder) {
 		Serde<Order> orderSerde = new JsonSerde<>(Order.class);
 
 		KStream<String, Order> orderStreams = streamsBuilder
-				.stream(topicPayments, Consumed.with(Serdes.String(), new JsonSerde<>(Order.class)))
+				.stream(Utils.TOPIC_PAYMENTS, Consumed.with(Serdes.String(), new JsonSerde<>(Order.class)))
 				.filter((key, value) -> !value.getPayments().isEmpty())
 				.map((key, order) -> new KeyValue<>(order.getId(), processPayment(order)));
 
 		orderStreams.print(Printed.<String, Order>toSysOut().withLabel("orderPayment"));
-		orderStreams.to(topicShipments, Produced.with(Serdes.String(), orderSerde));
+		orderStreams.to(Utils.TOPIC_SHIPMENTS, Produced.with(Serdes.String(), orderSerde));
 	}
 
 	public static Order processPayment(Order order) {

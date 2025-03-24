@@ -11,33 +11,27 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Printed;
 import org.apache.kafka.streams.kstream.Produced;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import sibling.stream.order.model.JsonSerde;
 import sibling.stream.order.model.Order;
 import sibling.stream.order.model.OrderTracking;
 import sibling.stream.order.model.OrderTracking.OrderTrackingState;
+import sibling.stream.order.utils.Utils;
 
 @Component
 public class OrderPrepareTopology {
-
-	@Value("${topics.transports}")
-	private String topicTransports;
-
-	@Value("${topics.shipments}")
-	private String topicShipments;
 
 	@Autowired
 	public void process(StreamsBuilder streamsBuilder) {
 		Serde<Order> orderSerde = new JsonSerde<>(Order.class);
 
 		KStream<String, Order> orderStreams = streamsBuilder
-				.stream(topicShipments, Consumed.with(Serdes.String(), new JsonSerde<>(Order.class)))
+				.stream(Utils.TOPIC_SHIPMENTS, Consumed.with(Serdes.String(), new JsonSerde<>(Order.class)))
 				.map((key, order) -> new KeyValue<>(order.getId(), processShipment(order)));
 
 		orderStreams.print(Printed.<String, Order>toSysOut().withLabel("orderPrepare"));
-		orderStreams.to(topicTransports, Produced.with(Serdes.String(), orderSerde));
+		orderStreams.to(Utils.TOPIC_TRANSPORTS, Produced.with(Serdes.String(), orderSerde));
 	}
 
 	public static Order processShipment(Order order) {

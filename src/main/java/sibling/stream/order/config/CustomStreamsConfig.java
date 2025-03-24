@@ -7,31 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.config.TopicBuilder;
 
+import sibling.stream.order.utils.Utils;
+
 @Configuration
 @EnableKafkaStreams
 public class CustomStreamsConfig {
-	
-	@Value("${topics.orders}")
-	private String topicOrders;
-	
-	@Value("${topics.frauds}")
-	private String topicFrauds;
-	
-	@Value("${topics.payments}")
-	private String topicPayments;
-	
-	@Value("${topics.shipments}")
-	private String topicShipments;
-	
-	@Value("${topics.transports}")
-	private String topicTransports;
-
-	@Value("${topics.deliveries}")
-	private String topicDeliveries;
-	
-	@Value("${topics.completed}")
-	private String topicCompleted;
-	
+		
 	@Value("${topics.partitions}")
 	private Integer partitions;
 	
@@ -40,7 +21,7 @@ public class CustomStreamsConfig {
 	
 	@Bean
 	  public NewTopic order() {
-	    return TopicBuilder.name(topicOrders)
+	    return TopicBuilder.name(Utils.TOPIC_ORDERS)
 	        .partitions(partitions)
 	        .replicas(replicas)
 	        .build();
@@ -48,7 +29,7 @@ public class CustomStreamsConfig {
 	
 	@Bean
 	  public NewTopic fraud() {
-	    return TopicBuilder.name(topicFrauds)
+	    return TopicBuilder.name(Utils.TOPIC_FRAUDS)
 	        .partitions(partitions)
 	        .replicas(replicas)
 	        .build();
@@ -56,7 +37,7 @@ public class CustomStreamsConfig {
 	
 	@Bean
 	  public NewTopic shippment() {
-	    return TopicBuilder.name(topicShipments)
+	    return TopicBuilder.name(Utils.TOPIC_SHIPMENTS)
 	        .partitions(partitions)
 	        .replicas(replicas)
 	        .build();
@@ -64,7 +45,7 @@ public class CustomStreamsConfig {
 	
 	@Bean
 	  public NewTopic payment() {
-	    return TopicBuilder.name(topicPayments)
+	    return TopicBuilder.name(Utils.TOPIC_PAYMENTS)
 	        .partitions(partitions)
 	        .replicas(replicas)
 	        .build();
@@ -72,7 +53,7 @@ public class CustomStreamsConfig {
 	
 	@Bean
 	  public NewTopic transport() {
-	    return TopicBuilder.name(topicTransports)
+	    return TopicBuilder.name(Utils.TOPIC_TRANSPORTS)
 	        .partitions(partitions)
 	        .replicas(replicas)
 	        .build();
@@ -80,7 +61,7 @@ public class CustomStreamsConfig {
 	
 	@Bean
 	  public NewTopic delivery() {
-	    return TopicBuilder.name(topicDeliveries)
+	    return TopicBuilder.name(Utils.TOPIC_DELIVERIES)
 	        .partitions(partitions)
 	        .replicas(replicas)
 	        .build();
@@ -88,7 +69,7 @@ public class CustomStreamsConfig {
 	
 	@Bean
 	  public NewTopic completed() {
-	    return TopicBuilder.name(topicCompleted)
+	    return TopicBuilder.name(Utils.TOPIC_COMPLETED)
 	        .partitions(partitions)
 	        .replicas(replicas)
 	        .build();

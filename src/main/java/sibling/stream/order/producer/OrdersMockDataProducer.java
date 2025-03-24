@@ -76,7 +76,7 @@ public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
               ));
 	  
 	  orders.stream()
-      .map(order -> new ProducerRecord<>("orders_", order.getId(), toJson(order)))
+      .map(order -> new ProducerRecord<>("orders", order.getId(), toJson(order)))
       .forEach(record -> send(orderProducer, record));
   }
 
